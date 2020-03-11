@@ -36,12 +36,28 @@ void freeMatrix (Matrix matrix) {
 }
 
 Matrix multiplyMatrix(Matrix m1, Matrix m2) {
-    if (m1.width !== m2.height) {
+    if (m1.width != m2.height) {
         printf("Cannot multiply these matrices.\n");
-        return NULL;
+        return (Matrix) {0, 0, NULL};
     }
 
-    return NULL;
+    Matrix mR;
+    mR.height = m1.height;
+    mR.width = m2.width;
+
+    int **mat = (int **) malloc(sizeof(int *) * mR.height);
+    for (int i = 0; i < mR.height; i++) {
+        mat[i] = (int *) calloc(mR.width, sizeof(int));
+
+        for (int j = 0; j < mR.width; j++) {
+            for (int k = 0; k < m1.width; k++) {
+                mat[i][j] += m1.data[i][k] * m2.data[k][j];
+            }
+        }
+    }
+
+    mR.data = mat;
+    return mR;
 }
 
 int main(int argc, char *argv[]){
@@ -61,7 +77,7 @@ int main(int argc, char *argv[]){
 
     freeMatrix(m1);
     freeMatrix(m2);
-    if (mR) {
+    if (mR.data) {
         freeMatrix(mR);
     }
 
